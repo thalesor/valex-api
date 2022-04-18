@@ -2,7 +2,9 @@ import dayjs from "dayjs";
 import bcrypt from "bcrypt";
 import { faker } from '@faker-js/faker';
 import * as cardRepository from "../repositories/cardRepository.js";
-import { conflictError, notFoundError } from "../middlewares/errorHandlerMiddleware.js";
+import * as rechargeRepository from "../repositories/rechargeRepository.js";
+import * as paymentRepository from "../repositories/paymentRepository.js";
+import { conflictError, notFoundError, unauthorizedError } from "../middlewares/errorHandlerMiddleware.js";
 
 async function findById(id: number) {
     const card = await cardRepository.findById(id)
@@ -21,6 +23,11 @@ export function ensureIsCorrectCCV(ccv: string, compareTo: string) {
     throw conflictError("That's not the CCV of this card");
 }
 
+export function ensureIsCorrectPassword(password: string, compareTo: string) {
+    if(!bcrypt.compareSync(password, compareTo))
+    throw unauthorizedError("Unauthorized! Password is invalid, try again");
+}
+
 export function ensureCardHasNotExpired(expirationDate: string)
 {
     let splitDate = expirationDate.split("/");
@@ -33,6 +40,16 @@ export function ensureCardHasNoPassword(card: cardRepository.Card)
 {
     if(card.password !== null)
     throw conflictError(`This card has already been activated`);
+}
+
+export function ensureCardIsUnblocked(card: cardRepository.Card)
+{
+    if(card.isBlocked && card.password === null)
+        throw conflictError(`This card has not been activated yet`);
+    if(card.isBlocked && card.password !== null)
+        throw conflictError(`This card has been blocked`);
+    else
+        return
 }
 
 export function convertNameToCardHolder(employeeName: string)
@@ -96,5 +113,6 @@ export async function activateCard(id: number, password: string)
     }
     return await cardRepository.update(id, card);
 }
+
 
 

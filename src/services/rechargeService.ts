@@ -5,6 +5,11 @@ export async function insertRecharge(recharge: rechargeRepository.RechargeInsert
     return await rechargeRepository.insert(recharge);
 }
 
+export async function findByCardId(cardId: number) {
+    return await rechargeRepository.findByCardId(cardId);
+}
+
+
 
 
 
