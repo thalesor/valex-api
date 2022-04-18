@@ -62,3 +62,19 @@ export async function activateCard(req: Request, res: Response) {
   return res.status(200).send("card successfully activated");
   
 }
+
+export async function getBalance(req: Request, res: Response) {
+  
+  const { id } = req.params;
+
+  if(!id)
+    return res.status(401).send(`The app is missing the card's ID`);
+  else if(isNaN(Number(id)))
+    return res.status(401).send(`The informed card's ID must be a number`);
+
+  const card = await cardService.ensureCardDoesExist(Number(id));
+
+  const balance = await cardService.getBalance(Number(id));
+  return res.status(200).send(balance);
+  
+}

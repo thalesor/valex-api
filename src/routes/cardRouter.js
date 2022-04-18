@@ -17,4 +17,9 @@ cardRouter.put(
   cardController.activateCard
 );
 
+cardRouter.get(
+  "/cards/:id/balance",
+  cardController.getBalance
+);
+
 export default cardRouter;

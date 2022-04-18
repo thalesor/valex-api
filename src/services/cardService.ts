@@ -99,6 +99,23 @@ export async function generateCardData(employeeId: number, cardType: cardReposit
       return card;
 }
 
+export async function getBalance(cardId: number)
+{
+    let rechargesList = await rechargeRepository.findByCardId(cardId);
+    let paymentsList = await paymentRepository.findByCardId(cardId);
+
+    const rechargesAmout = rechargesList.reduce((a, b) => a + b.amount, 0);
+    const paymentsAmount = paymentsList.reduce((a, b) => a + b.amount, 0);
+
+    const totalAvailable = rechargesAmout - paymentsAmount;
+
+    return {
+        "balance": totalAvailable,
+        "transactions": paymentsList,
+        "recharges": rechargesList
+    }
+}
+
 export async function createCard(card: cardRepository.CardInsertData)
 {
     card.securityCode = bcrypt.hashSync(card.securityCode, 10);

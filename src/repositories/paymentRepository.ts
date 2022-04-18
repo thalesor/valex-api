@@ -14,6 +14,7 @@ export async function findByCardId(cardId: number) {
   const result = await connection.query<PaymentWithBusinessName, [number]>(
     `SELECT 
       payments.*,
+      to_char(payments.timestamp, 'DD/MM/YYYY') as timestamp,
       businesses.name as "businessName"
      FROM payments 
       JOIN businesses ON businesses.id=payments."businessId"
