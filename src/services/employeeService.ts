@@ -10,6 +10,17 @@ async function findById(id: number) {
   return employee;
 }
 
+async function findCardByTypeAndEmployee(idEmployee: number, cardType: cardRepository.TransactionTypes) {
+  const card = await cardRepository.findByTypeAndEmployeeId(cardType, idEmployee);
+  if(card)
+  throw conflictError(`this employee can't have more than one card of type ${cardType}`);
+  return card;
+}
+
 export async function ensureEmployeeDoesExist(id: number) {
   return findById(id)
+}
+
+export async function ensureEmployeeDoesntHaveCard(idEmployee: number, cardType: cardRepository.TransactionTypes) {
+  return findCardByTypeAndEmployee(idEmployee, cardType);
 }

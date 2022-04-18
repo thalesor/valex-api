@@ -1,23 +1,20 @@
 import { Router } from "express";
-import { createCard } from "../controllers/cardController.js";
+import * as cardController from "../controllers/cardController.js";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
-import { cardInsertSchema } from "../schemas/cardSchemas.js";
+import { cardInsertSchema, cardActivateSchema } from "../schemas/cardSchemas.js";
 
 const cardRouter = Router();
-//employeeRouter.get("/employees", getEmployees);
-//employeeRouter.get("/employees/:id", getEmployee);
-//employeeRouter.get("/employees/:id/net-salary", getEmployeeNetSalaryWithTaxes);
+
 cardRouter.post(
   "/cards",
   validateSchemaMiddleware(cardInsertSchema),
-  createCard
+  cardController.createCard
 );
-/*
-employeeRouter.put(
-  "/employees/:id",
-  validateSchemaMiddleware(employeeUpdateSchema),
-  updateEmployee
+
+cardRouter.put(
+  "/cards/:id/activate",
+  validateSchemaMiddleware(cardActivateSchema),
+  cardController.activateCard
 );
-employeeRouter.delete("/employees/:id", deleteEmployee);
-*/
+
 export default cardRouter;

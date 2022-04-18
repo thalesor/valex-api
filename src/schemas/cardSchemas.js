@@ -10,9 +10,7 @@ export const cardInsertSchema = joi.object({
     'health')
 }).required();
 
-export const cardUpdateSchema = joi.object({
-  fullName: joi.string(),
-  birthDate: joi.date(),
-  position: joi.string(),
-  grossSalary: joi.number(),
+export const cardActivateSchema = joi.object({
+  password: joi.string().pattern(/^[0-9]{4}$/).required(),
+  ccv: joi.string().length(3).required()
 });
