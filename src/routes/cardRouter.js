@@ -22,4 +22,14 @@ cardRouter.get(
   cardController.getBalance
 );
 
+cardRouter.put(
+  "/cards/:id/block",
+  cardController.blockCard
+);
+
+cardRouter.put(
+  "/cards/:id/unblock",
+  cardController.unblockCard
+);
+
 export default cardRouter;

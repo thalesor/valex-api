@@ -19,12 +19,12 @@ export async function insertPosPayment(req: Request, res: Response) {
     
     const card = await cardService.ensureCardDoesExist(Number(cardId));
 
+    cardService.ensureIsCorrectPassword(givenPassword, card.password);
+    
     await cardService.ensureCardIsUnblocked(card);
 
     cardService.ensureCardHasNotExpired(card.expirationDate);
     
-    cardService.ensureIsCorrectPassword(givenPassword, card.password);
-
     const business = await businessService.ensureBusinessDoesExist(businessId);
 
     businessService.ensureBusinessAndCardTypeMatch(business, card);

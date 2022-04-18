@@ -47,7 +47,15 @@ export function ensureCardIsUnblocked(card: cardRepository.Card)
     if(card.isBlocked && card.password === null)
         throw conflictError(`This card has not been activated yet`);
     if(card.isBlocked && card.password !== null)
-        throw conflictError(`This card has been blocked`);
+        throw conflictError(`This card is blocked`);
+    else
+        return
+}
+
+export function ensureCardIsBlocked(card: cardRepository.Card)
+{
+    if(!card.isBlocked)
+        throw conflictError(`This card is not blocked`);
     else
         return
 }
@@ -131,5 +139,20 @@ export async function activateCard(id: number, password: string)
     return await cardRepository.update(id, card);
 }
 
+export async function blockCard(id: number)
+{
+    const card = {
+        isBlocked: true 
+    }
+    return await cardRepository.update(id, card);
+}
+
+export async function unBlockCard(id: number)
+{
+    const card = {
+        isBlocked: false 
+    }
+    return await cardRepository.update(id, card);
+}
 
 

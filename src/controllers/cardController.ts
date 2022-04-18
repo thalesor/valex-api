@@ -63,6 +63,58 @@ export async function activateCard(req: Request, res: Response) {
   
 }
 
+export async function blockCard(req: Request, res: Response) {
+  
+  const { id } = req.params;
+  const { password: givenPassword } = req.body;
+
+  if(!id)
+    return res.status(401).send(`The app is missing the card's ID`);
+  else if(isNaN(Number(id)))
+    return res.status(401).send(`The informed card's ID must be a number`);
+  else if(!givenPassword)
+    return res.status(401).send(`The app is missing the password for this card`);
+
+  const card = await cardService.ensureCardDoesExist(Number(id));
+
+  cardService.ensureCardHasNotExpired(card.expirationDate);
+  
+  cardService.ensureCardIsUnblocked(card);
+
+  cardService.ensureIsCorrectPassword(givenPassword, card.password);
+
+  await cardService.blockCard(Number(id));
+
+  return res.status(200).send("card has successfully been blocked");
+  
+}
+
+export async function unblockCard(req: Request, res: Response) {
+  
+  const { id } = req.params;
+  const { password: givenPassword } = req.body;
+
+  if(!id)
+    return res.status(401).send(`The app is missing the card's ID`);
+  else if(isNaN(Number(id)))
+    return res.status(401).send(`The informed card's ID must be a number`);
+  else if(!givenPassword)
+    return res.status(401).send(`The app is missing the password for this card`);
+
+  const card = await cardService.ensureCardDoesExist(Number(id));
+
+  cardService.ensureCardHasNotExpired(card.expirationDate);
+  
+  cardService.ensureCardIsBlocked(card);
+
+  cardService.ensureIsCorrectPassword(givenPassword, card.password);
+
+  await cardService.unBlockCard(Number(id));
+
+  return res.status(200).send("card has successfully been unblocked");
+  
+}
+
 export async function getBalance(req: Request, res: Response) {
   
   const { id } = req.params;
